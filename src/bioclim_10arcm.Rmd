@@ -1,0 +1,295 @@
+---
+title: "GIS layers"
+author: '@rvosa'
+date: '2022-05-23'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# here we configure our environment and load the required dependencies
+knitr::opts_chunk$set(echo = TRUE)
+options(stringsAsFactors = FALSE)
+library(raster)
+library(tidyverse)
+library(rgdal)
+```
+
+# Introduction
+
+GIS data releases such as BioClim (WorldClim) and ENVIREM are very useful for
+eco-evolutionary research. However, some of the layers are hard to develop an
+intuition for based solely on the definition of what the variable means. Here
+we provide worldwide maps of the variables. The main purpose of this is to be
+of help in interpreting the results of ENM/SDM analyses or other approaches 
+that select variables out of larger sets, for example when including OMI-
+transformed point estimates of species optima. We therefore map these data
+only at the lowest resolution (10 arc minutes) to get a global perspective 
+without too much data.
+
+## BioClim
+
+Fick, S.E. and R.J. Hijmans, 2017. WorldClim 2: new 1km spatial resolution 
+climate surfaces for global land areas. 
+International Journal of Climatology 37 (12): 4302-4315.
+[https://doi.org/10.1002/joc.5086](https://doi.org/10.1002/joc.5086)
+
+Data at: [https://www.worldclim.org/data/bioclim.html](https://www.worldclim.org/data/bioclim.html)
+
+Bioclimatic variables are derived from the monthly temperature and rainfall 
+values in order to generate more biologically meaningful variables. These are 
+often used in species distribution modeling and related ecological modeling 
+techniques. The bioclimatic variables represent annual trends (e.g., mean 
+annual temperature, annual precipitation) seasonality (e.g., annual range in 
+temperature and precipitation) and extreme or limiting environmental factors 
+(e.g., temperature of the coldest and warmest month, and precipitation of the 
+wet and dry quarters). A quarter is a period of three months (1/4 of the year).
+
+### BIO1 = Annual Mean Temperature
+
+This tracks the latitude: highest near the equator, lowest near the poles.
+Mountains are exceptions: higher in the mountains is similar to further
+away from the equator.
+
+```{r bio1info}
+GDALinfo("../data/bioclim/2.1/10m/wc2.1_10m_bio_1.tif")
+```
+```{r bio1map}
+r <- raster("../data/bioclim/2.1/10m/wc2.1_10m_bio_1.tif", values=T, nrows=1080, ncols=2160, xmn=-180, xmx=180, ymn=-90, ymx=90)
+plot(r)
+```
+
+### BIO2 = Mean Diurnal Range (Mean of monthly (max temp - min temp))
+
+Diurnal = through the 24hr cycle. So for every month the difference between max
+temp (during the day) and min temp (at night) is taken. This is highest in 
+desert regions, with cold nights and hot days.
+
+```{r bio2info}
+GDALinfo("../data/bioclim/2.1/10m/wc2.1_10m_bio_2.tif")
+```
+```{r bio2map}
+r <- raster("../data/bioclim/2.1/10m/wc2.1_10m_bio_2.tif", values=T, nrows=1080, ncols=2160, xmn=-180, xmx=180, ymn=-90, ymx=90)
+plot(r)
+```
+
+### BIO3 = Isothermality (BIO2/BIO7) (×100)
+
+This variable is BIO2 divided by BIO7, so, the daily range divided by the annual
+range. Because the annual range is lowest in the equatorial tropics (there are 
+more or less no seasons), this quotient is highest in the tropics.
+
+```{r bio3info}
+GDALinfo("../data/bioclim/2.1/10m/wc2.1_10m_bio_3.tif")
+```
+```{r bio3map}
+r <- raster("../data/bioclim/2.1/10m/wc2.1_10m_bio_3.tif", values=T, nrows=1080, ncols=2160, xmn=-180, xmx=180, ymn=-90, ymx=90)
+plot(r)
+```
+
+### BIO4 = Temperature Seasonality (standard deviation ×100)
+
+The degree to which temperature varies by season. This is highest in the polar
+regions, where summers can be above 10 degrees while winters are freezing. 
+
+```{r bio4info}
+GDALinfo("../data/bioclim/2.1/10m/wc2.1_10m_bio_4.tif")
+```
+```{r bio4map}
+r <- raster("../data/bioclim/2.1/10m/wc2.1_10m_bio_4.tif", values=T, nrows=1080, ncols=2160, xmn=-180, xmx=180, ymn=-90, ymx=90)
+plot(r)
+```
+
+### BIO5 = Max Temperature of Warmest Month
+
+This mostly shows that extraordinary heat waves can happen almost anywhere 
+except high in the polar regions and high in the mountains.
+
+```{r bio5info}
+GDALinfo("../data/bioclim/2.1/10m/wc2.1_10m_bio_5.tif")
+```
+```{r bio5map}
+r <- raster("../data/bioclim/2.1/10m/wc2.1_10m_bio_5.tif", values=T, nrows=1080, ncols=2160, xmn=-180, xmx=180, ymn=-90, ymx=90)
+plot(r)
+```
+
+### BIO6 = Min Temperature of Coldest Month
+
+No frost in tropics, but possible in arid subtropics. Severe freezing in polar
+regions and in the mountains.
+
+```{r bio6info}
+GDALinfo("../data/bioclim/2.1/10m/wc2.1_10m_bio_6.tif")
+```
+```{r bio6map}
+r <- raster("../data/bioclim/2.1/10m/wc2.1_10m_bio_6.tif", values=T, nrows=1080, ncols=2160, xmn=-180, xmx=180, ymn=-90, ymx=90)
+plot(r)
+```
+
+### BIO7 = Temperature Annual Range (BIO5-BIO6)
+
+The difference between max temperature during the warmest month (BIO5) and the 
+min temperature during the coldest. This difference is the greatest in the polar
+regions and smallest near the equator.
+
+```{r bio7info}
+GDALinfo("../data/bioclim/2.1/10m/wc2.1_10m_bio_7.tif")
+```
+```{r bio7map}
+r <- raster("../data/bioclim/2.1/10m/wc2.1_10m_bio_7.tif", values=T, nrows=1080, ncols=2160, xmn=-180, xmx=180, ymn=-90, ymx=90)
+plot(r)
+```
+
+### BIO8 = Mean Temperature of Wettest Quarter
+
+The wettest quarter is warmest in the tropics.
+
+```{r bio8info}
+GDALinfo("../data/bioclim/2.1/10m/wc2.1_10m_bio_8.tif")
+```
+```{r bio8map}
+r <- raster("../data/bioclim/2.1/10m/wc2.1_10m_bio_8.tif", values=T, nrows=1080, ncols=2160, xmn=-180, xmx=180, ymn=-90, ymx=90)
+plot(r)
+```
+
+### BIO9 = Mean Temperature of Driest Quarter
+
+The driest quarter is warmest in the tropics.
+
+```{r bio9info}
+GDALinfo("../data/bioclim/2.1/10m/wc2.1_10m_bio_9.tif")
+```
+```{r bio9map}
+r <- raster("../data/bioclim/2.1/10m/wc2.1_10m_bio_9.tif", values=T, nrows=1080, ncols=2160, xmn=-180, xmx=180, ymn=-90, ymx=90)
+plot(r)
+```
+
+### BIO10 = Mean Temperature of Warmest Quarter
+
+Closely tracks BIO1
+
+
+```{r bio10info}
+GDALinfo("../data/bioclim/2.1/10m/wc2.1_10m_bio_10.tif")
+```
+```{r bio10map}
+r <- raster("../data/bioclim/2.1/10m/wc2.1_10m_bio_10.tif", values=T, nrows=1080, ncols=2160, xmn=-180, xmx=180, ymn=-90, ymx=90)
+plot(r)
+```
+
+### BIO11 = Mean Temperature of Coldest Quarter
+
+Closely tracks BIO1
+
+```{r bio11info}
+GDALinfo("../data/bioclim/2.1/10m/wc2.1_10m_bio_11.tif")
+```
+```{r bio11map}
+r <- raster("../data/bioclim/2.1/10m/wc2.1_10m_bio_11.tif", values=T, nrows=1080, ncols=2160, xmn=-180, xmx=180, ymn=-90, ymx=90)
+plot(r)
+```
+
+### BIO12 = Annual Precipitation
+
+I.e. rain, snow, hail, etc. Precipitation roughly follows bands with the 
+equatorial tropics being the wettest, then followed by the driest (desert) zone
+in either direction away from the equator, then the less dry subtropical zone
+(including mediterranean climates) followed by the wetter temperate and boreal
+zones.
+
+```{r bio12info}
+GDALinfo("../data/bioclim/2.1/10m/wc2.1_10m_bio_12.tif")
+```
+```{r bio12map}
+r <- raster("../data/bioclim/2.1/10m/wc2.1_10m_bio_12.tif", values=T, nrows=1080, ncols=2160, xmn=-180, xmx=180, ymn=-90, ymx=90)
+plot(r)
+```
+
+### BIO13 = Precipitation of Wettest Month
+
+Closely tracks BIO12
+
+```{r bio13info}
+GDALinfo("../data/bioclim/2.1/10m/wc2.1_10m_bio_13.tif")
+```
+```{r bio13map}
+r <- raster("../data/bioclim/2.1/10m/wc2.1_10m_bio_13.tif", values=T, nrows=1080, ncols=2160, xmn=-180, xmx=180, ymn=-90, ymx=90)
+plot(r)
+```
+
+### BIO14 = Precipitation of Driest Month
+
+The general trend is that high values are even more tightly clustered around the
+equator, where precipitation is the most constant year round (and therefore even
+during the driest month). Besides that, coastal mountain ranges catch the most
+constant precipitation.
+
+```{r bio14info}
+GDALinfo("../data/bioclim/2.1/10m/wc2.1_10m_bio_14.tif")
+```
+```{r bio14map}
+r <- raster("../data/bioclim/2.1/10m/wc2.1_10m_bio_14.tif", values=T, nrows=1080, ncols=2160, xmn=-180, xmx=180, ymn=-90, ymx=90)
+plot(r)
+```
+
+### BIO15 = Precipitation Seasonality (Coefficient of Variation)
+
+Values are the highest, meaning variation is the greatest across seasons, in the
+arid zones flanking the wet, equatorial tropics. Example: the Sahel.
+
+```{r bio15info}
+GDALinfo("../data/bioclim/2.1/10m/wc2.1_10m_bio_15.tif")
+```
+```{r bio15map}
+r <- raster("../data/bioclim/2.1/10m/wc2.1_10m_bio_15.tif", values=T, nrows=1080, ncols=2160, xmn=-180, xmx=180, ymn=-90, ymx=90)
+plot(r)
+```
+
+### BIO16 = Precipitation of Wettest Quarter
+
+Closely tracks BIO13.
+
+```{r bio16info}
+GDALinfo("../data/bioclim/2.1/10m/wc2.1_10m_bio_16.tif")
+```
+```{r bio16map}
+r <- raster("../data/bioclim/2.1/10m/wc2.1_10m_bio_16.tif", values=T, nrows=1080, ncols=2160, xmn=-180, xmx=180, ymn=-90, ymx=90)
+plot(r)
+```
+
+### BIO17 = Precipitation of Driest Quarter
+
+Closely tracks BIO14.
+
+```{r bio17info}
+GDALinfo("../data/bioclim/2.1/10m/wc2.1_10m_bio_17.tif")
+```
+```{r bio17map}
+r <- raster("../data/bioclim/2.1/10m/wc2.1_10m_bio_17.tif", values=T, nrows=1080, ncols=2160, xmn=-180, xmx=180, ymn=-90, ymx=90)
+plot(r)
+```
+
+### BIO18 = Precipitation of Warmest Quarter
+
+Highest in tropics and on the wet side of mountain ranges, e.g. see Himalaya.
+
+
+```{r bio18info}
+GDALinfo("../data/bioclim/2.1/10m/wc2.1_10m_bio_18.tif")
+```
+```{r bio18map}
+r <- raster("../data/bioclim/2.1/10m/wc2.1_10m_bio_18.tif", values=T, nrows=1080, ncols=2160, xmn=-180, xmx=180, ymn=-90, ymx=90)
+plot(r)
+```
+
+### BIO19 = Precipitation of Coldest Quarter
+
+Closely tracks BIO14.
+
+
+```{r bio19info}
+GDALinfo("../data/bioclim/2.1/10m/wc2.1_10m_bio_19.tif")
+```
+```{r bio19map}
+r <- raster("../data/bioclim/2.1/10m/wc2.1_10m_bio_19.tif", values=T, nrows=1080, ncols=2160, xmn=-180, xmx=180, ymn=-90, ymx=90)
+plot(r)
+```
