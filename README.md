@@ -1,2 +1,1 @@
-# visualize-gis-data
-Maps of some of the main bioclimatic GIS data sets
+[BioClim](doc/bioclim_10arcm.html)
