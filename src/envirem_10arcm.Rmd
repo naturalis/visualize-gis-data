@@ -1,0 +1,282 @@
+---
+title: "GIS layers"
+author: '@rvosa'
+date: '2023-05-23'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# here we configure our environment and load the required dependencies
+knitr::opts_chunk$set(echo = TRUE)
+options(stringsAsFactors = FALSE)
+library(raster)
+library(tidyverse)
+library(rgdal)
+```
+
+# Introduction
+
+GIS data releases such as BioClim (WorldClim) and ENVIREM are very useful for
+eco-evolutionary research. However, some of the layers are hard to develop an
+intuition for based solely on the definition of what the variable means. Here
+we provide worldwide maps of the variables. The main purpose of this is to be
+of help in interpreting the results of ENM/SDM analyses or other approaches 
+that select variables out of larger sets, for example when including OMI-
+transformed point estimates of species optima. We therefore map these data
+only at the lowest resolution (10 arc minutes) to get a global perspective 
+without too much data.
+
+## ENVIREM
+
+Title P.O., Bemmels J.B. 2018. ENVIREM: an expanded set of bioclimatic and 
+topographic variables increases flexibility and improves performance of 
+ecological niche modeling. Ecography. 41:291–307.
+[doi:10.1111/ecog.02880](https://doi.org/10.1111/ecog.02880)
+
+Data at: [https://envirem.github.io/](https://envirem.github.io/)
+
+Environmental variables that are thought to be relevant to species' ecology and 
+geographic distribution are essential for applications such as species 
+distribution modeling. However, the number of such variables that are available, 
+that span multiple time periods, and that can easily be integrated with other 
+datasets is very limited.
+
+With the ENVIREM dataset, we provide a number of climatic and topographic 
+variables that have been described in the literature, and make them available at 
+the same resolutions as are available at WorldClim, and for both current and 
+past time periods. 
+
+### annualPET
+
+Annual potential evapotranspiration: a measure of the ability of the atmosphere 
+to remove water through evapotranspiration processes, given unlimited moisture.
+
+This is high in regions with high actual or _possible_ evaporation. Not 
+necessarily tracking the latitudinal bands precisely: areas with high values 
+include the Taklamakan desert, and Southern Iberia, for example. 
+
+This measure expresses the potential, so it is unaffected by actual availability 
+or lack of water. Which means there is little difference between, for example, 
+the dry and wet parts of Africa.
+
+```{r annualPETinfo}
+GDALinfo("../data/envirem/1.0/10m/current_10arcmin_annualPET.tif")
+```
+```{r annualPETmap}
+r <- raster("../data/envirem/1.0/10m/current_10arcmin_annualPET.tif", values=T, nrows=900, ncols=2160, xmn=-180, xmx=180, ymn=-60, ymx=60)
+plot(r)
+```
+
+### aridityIndexThornthwaite
+
+Thornthwaite aridity index: Index of the degree of water deficit below water 
+need. This measure is strongly influenced by how much water is available. Values
+are high in areas that are actually dry (Sahara) but low in areas with a lot of
+rain (e.g. Congo basin).
+
+```{r aridityIndexThornthwaiteinfo}
+GDALinfo("../data/envirem/1.0/10m/current_10arcmin_aridityIndexThornthwaite.tif")
+```
+```{r aridityIndexThornthwaitemap}
+r <- raster("../data/envirem/1.0/10m/current_10arcmin_aridityIndexThornthwaite.tif", values=T, nrows=900, ncols=2160, xmn=-180, xmx=180, ymn=-60, ymx=60)
+plot(r)
+```
+
+### climaticMoistureIndex
+
+A metric of relative wetness and aridity. Values are high in wet areas, such as
+the west coasts of continents, especially at higher latitudes, or where 
+mountains force precipitation (e.g. Alps, Himalayas), or in the wet, equatorial
+tropics.
+
+```{r climaticMoistureIndexinfo}
+GDALinfo("../data/envirem/1.0/10m/current_10arcmin_climaticMoistureIndex.tif")
+```
+```{r climaticMoistureIndexmap}
+r <- raster("../data/envirem/1.0/10m/current_10arcmin_climaticMoistureIndex.tif", values=T, nrows=900, ncols=2160, xmn=-180, xmx=180, ymn=-60, ymx=60)
+plot(r)
+```
+
+### continentality
+
+Average temp. of warmest month - average temp. of coldest month. Values are 
+highest in the interior of large continents at high latitudes. The summers in
+much of Canada and in Siberia can be surprisingly warm, while the winters are
+very cold. Values are lowest around the equator.
+
+```{r continentalityinfo}
+GDALinfo("../data/envirem/1.0/10m/current_10arcmin_continentality.tif")
+```
+```{r continentalitymap}
+r <- raster("../data/envirem/1.0/10m/current_10arcmin_continentality.tif", values=T, nrows=900, ncols=2160, xmn=-180, xmx=180, ymn=-60, ymx=60)
+plot(r)
+```
+
+### embergerQ
+
+Emberger's pluviothermic quotient: a metric that was designed to differentiate 
+among Mediterranean type climates. At global scale, values are highest in the
+very wettest of the wet tropics but are lower nearly everywhere else.
+
+```{r embergerQinfo}
+GDALinfo("../data/envirem/1.0/10m/current_10arcmin_embergerQ.tif")
+```
+```{r embergerQmap}
+r <- raster("../data/envirem/1.0/10m/current_10arcmin_embergerQ.tif", values=T, nrows=900, ncols=2160, xmn=-180, xmx=180, ymn=-60, ymx=60)
+plot(r)
+```
+
+### growingDegDays0
+
+Sum of mean monthly temperature for months with mean temperature greater than 
+0℃ multiplied by number of days. Values are high in warm areas and low in cold
+areas. Consequently, this measure tracks latitude, except where high mountains
+are involved. For example, values are lower in the Andes than their latitude
+would suggest.
+
+```{r growingDegDays0info}
+GDALinfo("../data/envirem/1.0/10m/current_10arcmin_growingDegDays0.tif")
+```
+```{r growingDegDays0map}
+r <- raster("../data/envirem/1.0/10m/current_10arcmin_growingDegDays0.tif", values=T, nrows=900, ncols=2160, xmn=-180, xmx=180, ymn=-60, ymx=60)
+plot(r)
+```
+
+### growingDegDays5
+
+sum of mean monthly temperature for months with mean temperature greater than 
+5℃ multiplied by number of days. Closely tracks growingDegDays0.
+
+```{r growingDegDays5info}
+GDALinfo("../data/envirem/1.0/10m/current_10arcmin_growingDegDays5.tif")
+```
+```{r growingDegDays5map}
+r <- raster("../data/envirem/1.0/10m/current_10arcmin_growingDegDays5.tif", values=T, nrows=900, ncols=2160, xmn=-180, xmx=180, ymn=-60, ymx=60)
+plot(r)
+```
+
+### maxTempColdestMonth
+
+Max. temp. of the coldest month. Closely tracks latitude but with some mountain
+effects.
+
+```{r maxTempColdestMonthinfo}
+GDALinfo("../data/envirem/1.0/10m/current_10arcmin_maxTempColdest.tif")
+```
+```{r maxTempColdestMonthmap}
+r <- raster("../data/envirem/1.0/10m/current_10arcmin_maxTempColdest.tif", values=T, nrows=900, ncols=2160, xmn=-180, xmx=180, ymn=-60, ymx=60)
+plot(r)
+```
+
+### minTempWarmestMonth
+
+Min. temp. of the warmest month. Tracks latitude but with more mountain effects.
+
+```{r minTempWarmestMonthinfo}
+GDALinfo("../data/envirem/1.0/10m/current_10arcmin_minTempWarmest.tif")
+```
+```{r minTempWarmestMonthmap}
+r <- raster("../data/envirem/1.0/10m/current_10arcmin_minTempWarmest.tif", values=T, nrows=900, ncols=2160, xmn=-180, xmx=180, ymn=-60, ymx=60)
+plot(r)
+```
+
+### monthCountByTemp10
+
+Count of the number of months with mean temp greater than 10℃. Tracks latitude
+but with strong mountain effects. Very 'stepped' because values are integers
+(0-12) and so areas with very low and very high values could be near each other,
+e.g. 0 months with temp >10 high in the Andes next to areas where every month
+is >10 in the Amazonian rainforest.
+
+```{r monthCountByTemp10info}
+GDALinfo("../data/envirem/1.0/10m/current_10arcmin_monthCountByTemp10.tif")
+```
+```{r monthCountByTemp10map}
+r <- raster("../data/envirem/1.0/10m/current_10arcmin_monthCountByTemp10.tif", values=T, nrows=900, ncols=2160, xmn=-180, xmx=180, ymn=-60, ymx=60)
+plot(r)
+```
+
+### PETColdestQuarter
+
+Mean monthly PET of coldest quarter. PET = potential evapotranspiration, a 
+measure of the ability of the atmosphere to remove water through 
+evapotranspiration processes, given unlimited moisture. Values are highest
+in the semi-arid regions, such as the Sahel, next to the equatorial wet tropics.
+
+```{r PETColdestQuarterinfo}
+GDALinfo("../data/envirem/1.0/10m/current_10arcmin_PETColdestQuarter.tif")
+```
+```{r PETColdestQuartermap}
+r <- raster("../data/envirem/1.0/10m/current_10arcmin_PETColdestQuarter.tif", values=T, nrows=900, ncols=2160, xmn=-180, xmx=180, ymn=-60, ymx=60)
+plot(r)
+```
+
+### PETDriestQuarter
+
+Mean monthly PET of driest quarter. PET = potential evapotranspiration, a 
+measure of the ability of the atmosphere to remove water through 
+evapotranspiration processes, given unlimited moisture. Values are highest in
+semi-arid zones with a dry season, for example in Mediterranean climates such
+as the Med itself, the US westcoast, the Cape, southern Chile and western 
+Australia but also beyond that in the Maghreb and the Levant/Middle East.
+
+```{r PETDriestQuarterinfo}
+GDALinfo("../data/envirem/1.0/10m/current_10arcmin_PETDriestQuarter.tif")
+```
+```{r PETDriestQuartermap}
+r <- raster("../data/envirem/1.0/10m/current_10arcmin_PETDriestQuarter.tif", values=T, nrows=900, ncols=2160, xmn=-180, xmx=180, ymn=-60, ymx=60)
+plot(r)
+```
+
+### PETseasonality
+
+Monthly variability in potential evapotranspiration. Values are highest in
+'temperate' climates, not too hot and not too cold.
+
+```{r PETseasonalityinfo}
+GDALinfo("../data/envirem/1.0/10m/current_10arcmin_PETseasonality.tif")
+```
+```{r PETseasonalitymap}
+r <- raster("../data/envirem/1.0/10m/current_10arcmin_PETseasonality.tif", values=T, nrows=900, ncols=2160, xmn=-180, xmx=180, ymn=-60, ymx=60)
+plot(r)
+```
+
+### PETWarmestQuarter
+
+Mean monthly PET of warmest quarter. Values are highest in (semi)arid
+(sub)tropical areas. Especially deserts, but also steppes, prairies.
+
+```{r PETWarmestQuarterinfo}
+GDALinfo("../data/envirem/1.0/10m/current_10arcmin_PETWarmestQuarter.tif")
+```
+```{r PETWarmestQuartermap}
+r <- raster("../data/envirem/1.0/10m/current_10arcmin_PETWarmestQuarter.tif", values=T, nrows=900, ncols=2160, xmn=-180, xmx=180, ymn=-60, ymx=60)
+plot(r)
+```
+
+### PETWettestQuarter
+
+Mean monthly PET of wettest quarter. Values are abruptly lower in Mediterranean
+climate zones compared to both adjacent deserts and adjacent temperate zones.
+
+```{r PETWettestQuarterinfo}
+GDALinfo("../data/envirem/1.0/10m/current_10arcmin_PETWettestQuarter.tif")
+```
+```{r PETWettestQuartermap}
+r <- raster("../data/envirem/1.0/10m/current_10arcmin_PETWettestQuarter.tif", values=T, nrows=900, ncols=2160, xmn=-180, xmx=180, ymn=-60, ymx=60)
+plot(r)
+```
+
+### thermicityIndex
+
+Compensated thermicity index: sum of mean annual temp., min. temp. of coldest 
+month, max. temp. of the coldest month, x 10, with compensations for better 
+comparability across the globe. Tracks latitude but with mountain effects.
+
+```{r thermicityIndexinfo}
+GDALinfo("../data/envirem/1.0/10m/current_10arcmin_thermicityIndex.tif")
+```
+```{r thermicityIndexmap}
+r <- raster("../data/envirem/1.0/10m/current_10arcmin_thermicityIndex.tif", values=T, nrows=900, ncols=2160, xmn=-180, xmx=180, ymn=-60, ymx=60)
+plot(r)
+```
