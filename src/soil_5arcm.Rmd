@@ -1,0 +1,128 @@
+---
+title: "GIS layers"
+author: '@rvosa'
+date: '2022-05-25'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# here we configure our environment and load the required dependencies
+knitr::opts_chunk$set(echo = TRUE)
+options(stringsAsFactors = FALSE)
+library(raster)
+library(tidyverse)
+library(rgdal)
+```
+
+# Introduction
+
+GIS data releases such as BioClim (WorldClim) and ENVIREM are very useful for
+eco-evolutionary research. However, some of the layers are hard to develop an
+intuition for based solely on the definition of what the variable means. Here
+we provide worldwide maps of the variables. The main purpose of this is to be
+of help in interpreting the results of ENM/SDM analyses or other approaches 
+that select variables out of larger sets, for example when including OMI-
+transformed point estimates of species optima. We therefore map these data
+only at the lowest resolution (10 arc minutes) to get a global perspective 
+without too much data.
+
+## Global Soil Dataset for use in Earth System Models (GSDE)
+
+Shangguan, W., Dai, Y., Duan, Q., Liu, B. and Yuan, H., 2014. A Global Soil 
+Data Set for Earth System Modeling. Journal of Advances in Modeling Earth 
+Systems, 6: 249-263. 
+doi:[10.1002/2013MS000293](https://doi.org/10.1002/2013MS000293)
+
+From website:
+
+> We developed a comprehensive, gridded Global Soil Dataset for use in Earth 
+> System Models (GSDE) and other applications as well. GSDE provides soil 
+> information including soil particle-size distribution, organic carbon, and 
+> nutrients, etc. and quality control information in terms of confidence level. 
+> GSDE is based on the Soil Map of the World and various regional and national 
+> soil databases, including soil attribute data and soil maps. We used a 
+> standardized data structure and data processing procedures to harmonize the 
+> data collected from various sources. We then used a soil type linkage method 
+> (i.e. taxotransfer rules) and the polygon linkage method to derive the spatial 
+> distribution of soil properties. To aggregate the attributes of different 
+> compositions of a mapping unit, we used three mapping approaches: 
+> area-weighting method, the dominant soil type method and the dominant binned 
+> soil attribute method. In the released gridded dataset, we used the 
+> area-weighting method as it will meet the demands of most applications. The 
+> dataset can be also aggregate to a lower resolution. The resolution is 30 
+> arc-seconds (about 1 km at the equator). The vertical variation of soil 
+> property was captured by eight layers to the depth of 2.3 m (i.e. 0- 0.045, 
+> 0.045- 0.091, 0.091- 0.166, 0.166- 0.289, 0.289- 0.493, 0.493- 0.829, 0.829- 
+> 1.383 and 1.383- 2.296 m).
+
+Data at: http://globalchange.bnu.edu.cn/research/soilw
+
+### BulkDensity
+
+The soil bulk density (BD) is the mass of soil material divided by the total 
+volume of solids and pores. Because of lack of data, the BD is usually estimated 
+from the sand, silt, and clay contents in LSMs. The BD is inversely related to 
+the porosity of a soil. The BD impacts the soil water retention properties and 
+soil hydraulic conductivity.
+
+Apparently, soil is less dense at high latitudes.
+
+```{r BulkDensityinfo}
+GDALinfo("../data/soil/5m/BulkDensity.tif")
+```
+```{r BulkDensitymap}
+r <- raster("../data/soil/5m/BulkDensity.tif", values=T, nrows=1800, ncols=4320, xmn=-180, xmx=180, ymn=-60, ymx=60)
+plot(r)
+```
+
+### ClayPercentage
+
+In the GSDE, the areas with high sand content were found in the Africa, Canada, 
+Australia, Central Asia, and the Arabian Peninsula, most of which are deserts. 
+Usually, areas with high sand content had low clay content, and vice versa. 
+High clay content appeared in the South America, Central Africa, India, and 
+East Australia.
+
+**Note**: there will be a lot of local structure, e.g. clay content should also
+be high locally in river valleys.
+
+```{r ClayPercentageinfo}
+GDALinfo("../data/soil/5m/ClayPercentage.tif")
+```
+```{r ClayPercentagemap}
+r <- raster("../data/soil/5m/ClayPercentage.tif", values=T, nrows=1800, ncols=4320, xmn=-180, xmx=180, ymn=-60, ymx=60)
+plot(r)
+```
+
+### OrganicCarbon
+
+The soil organic carbon (SOC) increases the water-holding capacity of soil. The 
+SOC is also important to plant growth and is a major factor in the overall 
+health of soil. Usually, the SOC is not measured directly in a soil survey but 
+is estimated from the soil organic matter. In the GSDE, high SOC was primarily 
+found in the high latitudes of the Northern Hemisphere. Low SOC was found in the 
+desert areas. 
+
+```{r OrganicCarboninfo}
+GDALinfo("../data/soil/5m/OrganicCarbon.tif")
+```
+```{r OrganicCarbonmap}
+r <- raster("../data/soil/5m/OrganicCarbon.tif", values=T, nrows=1800, ncols=4320, xmn=-180, xmx=180, ymn=-60, ymx=60)
+plot(r)
+```
+
+### PhCaCL
+
+pH, measured in CaCl2 solution. A low pH means an acidic soil, e.g. in the 
+Amazonian and Congo basins, but also at high latitudes in Eurasia and North
+America. In both cases, high amounts of rain as well as intense decomposition
+processes serve to lower the pH compared to more arid regions, which are more
+alkaline.
+
+```{r PhCaCLinfo}
+GDALinfo("../data/soil/5m/PhCaCL.tif")
+```
+```{r PhCaCLmap}
+r <- raster("../data/soil/5m/PhCaCL.tif", values=T, nrows=1800, ncols=4320, xmn=-180, xmx=180, ymn=-60, ymx=60)
+plot(r)
+```
