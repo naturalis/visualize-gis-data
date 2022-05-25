@@ -1,0 +1,64 @@
+---
+title: "GIS layers"
+author: '@rvosa'
+date: '2022-05-25'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# here we configure our environment and load the required dependencies
+knitr::opts_chunk$set(echo = TRUE)
+options(stringsAsFactors = FALSE)
+library(raster)
+library(tidyverse)
+library(rgdal)
+```
+
+# Introduction
+
+GIS data releases such as BioClim (WorldClim) and ENVIREM are very useful for
+eco-evolutionary research. However, some of the layers are hard to develop an
+intuition for based solely on the definition of what the variable means. Here
+we provide worldwide maps of the variables. The main purpose of this is to be
+of help in interpreting the results of ENM/SDM analyses or other approaches 
+that select variables out of larger sets, for example when including OMI-
+transformed point estimates of species optima. We therefore map these data
+only at the lowest available resolution to get a global perspective 
+without too much data.
+
+## HWSD
+
+The Harmonized World Soil Database is a 30 arc-second raster database with over 
+15 000 different soil mapping units that combines existing regional and national 
+updates of soil information worldwide (SOTER, ESD, Soil Map of China, WISE) with 
+the information contained within the 1:5 000 000 scale FAO-UNESCO Soil Map of 
+the World (FAO, 1971-1981).
+
+Data source: https://www.fao.org/soils-portal/soil-survey/soil-maps-and-databases/harmonized-world-soil-database-v12/en/
+
+### Aspect
+
+The compass direction that a topographic slope faces, usually measured in 
+degrees from north. Aspect can be generated from continuous elevation surfaces.
+This is a small-scale pattern, i.e. there are very few global patterns.
+
+```{r BulkDensityinfo}
+GDALinfo("../data/hwsd/2.1/10m/Aspect_10deg.tif")
+```
+```{r BulkDensitymap}
+r <- raster("../data/hwsd/2.1/10m/Aspect_10deg.tif", values=T, nrows=900, ncols=2160, xmn=-180, xmx=180, ymn=-60, ymx=60)
+plot(r)
+```
+
+### Slope
+
+Slope is the percent change in elevation over a certain distance. This is high
+in rugged mountains.
+
+```{r Slopeinfo}
+GDALinfo("../data/hwsd/2.1/10m/slope_10deg.tif")
+```
+```{r Slopemap}
+r <- raster("../data/hwsd/2.1/10m/slope_10deg.tif", values=T, nrows=900, ncols=2160, xmn=-180, xmx=180, ymn=-60, ymx=60)
+plot(r)
+```
